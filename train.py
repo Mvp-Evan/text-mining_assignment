@@ -24,6 +24,7 @@ if __name__ == '__main__':
 
 	args = parser.parse_args()
 	model = {
+		'CNN3': models.CNN3,
 		'LSTM': models.LSTM,
 	}
 
