@@ -32,7 +32,7 @@ model = {
 	'LSTM_SP': models.LSTM_SP
 }
 
-con = config.EviConfig(args)
+con = configs.EviConfig(args)
 con.set_max_epoch(200)
 con.load_train_data()
 con.load_test_data()

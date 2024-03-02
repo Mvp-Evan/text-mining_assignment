@@ -5,7 +5,7 @@ from nltk.tokenize import WordPunctTokenizer
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('--in_path', type = str, default =  "../data")
-parser.add_argument('--out_path', type = str, default = "prepro_data")
+parser.add_argument('--out_path', type = str, default = "../data")
 
 args = parser.parse_args()
 in_path = args.in_path
