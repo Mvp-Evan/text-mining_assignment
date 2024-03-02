@@ -26,8 +26,8 @@ if __name__ == '__main__':
 	model = {
 		'CNN3': models.CNN3,
 		'LSTM': models.LSTM,
-		'BiAttention': models.BiAttention,
-		'BERT': models.BERT
+		'BiAttention': models.BiAttention,  # TODO: Not work, may give up it
+		'BERT': models.BERT  # TODO: modify the info to config
 	}
 
 	con = configs.Config(args)
