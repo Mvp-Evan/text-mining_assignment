@@ -6,3 +6,5 @@
 | epoch  1 | step  200 |  ms/b 42046.51 | train loss 0.003 | NA acc: 1.00 | not NA acc: 0.03  | tot acc: 0.97 
 | epoch  1 | step  250 |  ms/b 52845.91 | train loss 0.003 | NA acc: 1.00 | not NA acc: 0.05  | tot acc: 0.97 
 | epoch  2 | step  300 |  ms/b 22755.35 | train loss 0.003 | NA acc: 1.00 | not NA acc: 0.09  | tot acc: 0.97 
+| epoch  2 | step  350 |  ms/b 21005.55 | train loss 0.003 | NA acc: 1.00 | not NA acc: 0.10  | tot acc: 0.97 
+| epoch  3 | step  400 |  ms/b 23398.70 | train loss 0.002 | NA acc: 1.00 | not NA acc: 0.12  | tot acc: 0.97 

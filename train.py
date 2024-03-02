@@ -15,8 +15,8 @@ import argparse
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
-	parser.add_argument('--model_name', type = str, default = 'LSTM', help = 'name of the models')
-	parser.add_argument('--save_name', type = str, default = 'LSTM')
+	parser.add_argument('--model_name', type = str, default = 'BiAttention', help = 'name of the models')
+	parser.add_argument('--save_name', type = str, default = 'BiAttention')
 
 	parser.add_argument('--train_prefix', type = str, default = 'dev_train')
 	parser.add_argument('--test_prefix', type = str, default = 'dev_dev')
@@ -26,6 +26,7 @@ if __name__ == '__main__':
 	model = {
 		'CNN3': models.CNN3,
 		'LSTM': models.LSTM,
+		'BiAttention': models.BiAttention,
 	}
 
 	con = configs.Config(args)
