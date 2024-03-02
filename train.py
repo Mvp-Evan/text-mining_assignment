@@ -28,7 +28,6 @@ if __name__ == '__main__':
 		'LSTM': models.LSTM,
 		'BiLSTM': models.BiLSTM,
 		'BiAttention': models.BiAttention,  # TODO: Not work, may give up it
-		'BERT': models.BERT  # TODO: modify the info to config
 	}
 
 	con = configs.Config(args)

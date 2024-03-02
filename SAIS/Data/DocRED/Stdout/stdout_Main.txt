@@ -1,0 +1,164 @@
+2024 Mar 02 Sat, 16:11:17: ====================
+2024 Mar 02 Sat, 16:11:17: Start Main DocRED
+2024 Mar 02 Sat, 16:11:17: --------------------
+2024 Mar 02 Sat, 16:11:17: Seed = 2021
+2024 Mar 02 Sat, 16:11:17: Transformer = bert-base-cased
+2024 Mar 02 Sat, 16:11:17: Hidden Dim = 768
+2024 Mar 02 Sat, 16:11:17: Bilinear Block Size = 64
+2024 Mar 02 Sat, 16:11:17: RE Max Relations = 4
+2024 Mar 02 Sat, 16:11:17: CR Focal Gamma = 2
+2024 Mar 02 Sat, 16:11:17: PER Focal Gamma = 2
+2024 Mar 02 Sat, 16:11:17: FER Threshold = 0.5
+2024 Mar 02 Sat, 16:11:17: CR Loss Weight = 0.1
+2024 Mar 02 Sat, 16:11:17: ET Loss Weight = 0.1
+2024 Mar 02 Sat, 16:11:17: PER Loss Weight = 0.1
+2024 Mar 02 Sat, 16:11:17: FER Loss Weight = 0.1
+2024 Mar 02 Sat, 16:11:17: Num of Epoch = 20
+2024 Mar 02 Sat, 16:11:17: Batch Size = 4
+2024 Mar 02 Sat, 16:11:17: Updating Frequency = 1
+2024 Mar 02 Sat, 16:11:17: New Learning Rate = 0.0001
+2024 Mar 02 Sat, 16:11:17: Pretrained Learning Rate = 5e-05
+2024 Mar 02 Sat, 16:11:17: Warmup Ratio = 0.06
+2024 Mar 02 Sat, 16:11:17: Max Gradient Norm = 1.0
+2024 Mar 02 Sat, 16:11:17: --------------------
+2024 Mar 02 Sat, 16:11:17: Initialize Relevant Objects
+2024 Mar 02 Sat, 16:11:17: --------------------
+2024 Mar 02 Sat, 16:11:59: ====================
+2024 Mar 02 Sat, 16:11:59: Start Main DocRED
+2024 Mar 02 Sat, 16:11:59: --------------------
+2024 Mar 02 Sat, 16:11:59: Seed = 2021
+2024 Mar 02 Sat, 16:11:59: Transformer = bert-base-cased
+2024 Mar 02 Sat, 16:11:59: Hidden Dim = 768
+2024 Mar 02 Sat, 16:11:59: Bilinear Block Size = 64
+2024 Mar 02 Sat, 16:11:59: RE Max Relations = 4
+2024 Mar 02 Sat, 16:11:59: CR Focal Gamma = 2
+2024 Mar 02 Sat, 16:11:59: PER Focal Gamma = 2
+2024 Mar 02 Sat, 16:11:59: FER Threshold = 0.5
+2024 Mar 02 Sat, 16:11:59: CR Loss Weight = 0.1
+2024 Mar 02 Sat, 16:11:59: ET Loss Weight = 0.1
+2024 Mar 02 Sat, 16:11:59: PER Loss Weight = 0.1
+2024 Mar 02 Sat, 16:11:59: FER Loss Weight = 0.1
+2024 Mar 02 Sat, 16:11:59: Num of Epoch = 20
+2024 Mar 02 Sat, 16:11:59: Batch Size = 4
+2024 Mar 02 Sat, 16:11:59: Updating Frequency = 1
+2024 Mar 02 Sat, 16:11:59: New Learning Rate = 0.0001
+2024 Mar 02 Sat, 16:11:59: Pretrained Learning Rate = 5e-05
+2024 Mar 02 Sat, 16:11:59: Warmup Ratio = 0.06
+2024 Mar 02 Sat, 16:11:59: Max Gradient Norm = 1.0
+2024 Mar 02 Sat, 16:11:59: --------------------
+2024 Mar 02 Sat, 16:11:59: Initialize Relevant Objects
+2024 Mar 02 Sat, 16:11:59: --------------------
+2024 Mar 02 Sat, 16:12:06: Start Training Epoch 0
+2024 Mar 02 Sat, 16:12:06: --------------------
+2024 Mar 02 Sat, 17:30:33: ====================
+2024 Mar 02 Sat, 17:30:33: Start Main DocRED
+2024 Mar 02 Sat, 17:30:33: --------------------
+2024 Mar 02 Sat, 17:30:33: Seed = 2021
+2024 Mar 02 Sat, 17:30:33: Transformer = bert-base-cased
+2024 Mar 02 Sat, 17:30:33: Hidden Dim = 768
+2024 Mar 02 Sat, 17:30:33: Bilinear Block Size = 64
+2024 Mar 02 Sat, 17:30:33: RE Max Relations = 4
+2024 Mar 02 Sat, 17:30:33: CR Focal Gamma = 2
+2024 Mar 02 Sat, 17:30:33: PER Focal Gamma = 2
+2024 Mar 02 Sat, 17:30:33: FER Threshold = 0.5
+2024 Mar 02 Sat, 17:30:33: CR Loss Weight = 0.1
+2024 Mar 02 Sat, 17:30:33: ET Loss Weight = 0.1
+2024 Mar 02 Sat, 17:30:33: PER Loss Weight = 0.1
+2024 Mar 02 Sat, 17:30:33: FER Loss Weight = 0.1
+2024 Mar 02 Sat, 17:30:33: Num of Epoch = 20
+2024 Mar 02 Sat, 17:30:33: Batch Size = 4
+2024 Mar 02 Sat, 17:30:33: Updating Frequency = 1
+2024 Mar 02 Sat, 17:30:33: New Learning Rate = 0.0001
+2024 Mar 02 Sat, 17:30:33: Pretrained Learning Rate = 5e-05
+2024 Mar 02 Sat, 17:30:33: Warmup Ratio = 0.06
+2024 Mar 02 Sat, 17:30:33: Max Gradient Norm = 1.0
+2024 Mar 02 Sat, 17:30:33: --------------------
+2024 Mar 02 Sat, 17:30:33: Initialize Relevant Objects
+2024 Mar 02 Sat, 17:30:33: --------------------
+2024 Mar 02 Sat, 17:30:37: Start Training Epoch 0
+2024 Mar 02 Sat, 17:30:37: --------------------
+2024 Mar 02 Sat, 17:31:12: Finish Training Epoch 0 | Report Batch 0 | Loss 4.8994
+2024 Mar 02 Sat, 17:32:54: ====================
+2024 Mar 02 Sat, 17:32:54: Start Main DocRED
+2024 Mar 02 Sat, 17:32:54: --------------------
+2024 Mar 02 Sat, 17:32:54: Seed = 2021
+2024 Mar 02 Sat, 17:32:54: Transformer = bert-base-cased
+2024 Mar 02 Sat, 17:32:54: Hidden Dim = 768
+2024 Mar 02 Sat, 17:32:54: Bilinear Block Size = 64
+2024 Mar 02 Sat, 17:32:54: RE Max Relations = 4
+2024 Mar 02 Sat, 17:32:54: CR Focal Gamma = 2
+2024 Mar 02 Sat, 17:32:54: PER Focal Gamma = 2
+2024 Mar 02 Sat, 17:32:54: FER Threshold = 0.5
+2024 Mar 02 Sat, 17:32:54: CR Loss Weight = 0.1
+2024 Mar 02 Sat, 17:32:54: ET Loss Weight = 0.1
+2024 Mar 02 Sat, 17:32:54: PER Loss Weight = 0.1
+2024 Mar 02 Sat, 17:32:54: FER Loss Weight = 0.1
+2024 Mar 02 Sat, 17:32:54: Num of Epoch = 20
+2024 Mar 02 Sat, 17:32:54: Batch Size = 3
+2024 Mar 02 Sat, 17:32:54: Updating Frequency = 1
+2024 Mar 02 Sat, 17:32:54: New Learning Rate = 0.0001
+2024 Mar 02 Sat, 17:32:54: Pretrained Learning Rate = 5e-05
+2024 Mar 02 Sat, 17:32:54: Warmup Ratio = 0.06
+2024 Mar 02 Sat, 17:32:54: Max Gradient Norm = 1.0
+2024 Mar 02 Sat, 17:32:54: --------------------
+2024 Mar 02 Sat, 17:32:54: Initialize Relevant Objects
+2024 Mar 02 Sat, 17:32:54: --------------------
+2024 Mar 02 Sat, 17:32:58: Start Training Epoch 0
+2024 Mar 02 Sat, 17:32:58: --------------------
+2024 Mar 02 Sat, 17:33:09: Finish Training Epoch 0 | Report Batch 0 | Loss 4.8966
+2024 Mar 02 Sat, 17:34:23: ====================
+2024 Mar 02 Sat, 17:34:23: Start Main DocRED
+2024 Mar 02 Sat, 17:34:23: --------------------
+2024 Mar 02 Sat, 17:34:23: Seed = 2021
+2024 Mar 02 Sat, 17:34:23: Transformer = bert-base-cased
+2024 Mar 02 Sat, 17:34:23: Hidden Dim = 768
+2024 Mar 02 Sat, 17:34:23: Bilinear Block Size = 64
+2024 Mar 02 Sat, 17:34:23: RE Max Relations = 4
+2024 Mar 02 Sat, 17:34:23: CR Focal Gamma = 2
+2024 Mar 02 Sat, 17:34:23: PER Focal Gamma = 2
+2024 Mar 02 Sat, 17:34:23: FER Threshold = 0.5
+2024 Mar 02 Sat, 17:34:23: CR Loss Weight = 0.1
+2024 Mar 02 Sat, 17:34:23: ET Loss Weight = 0.1
+2024 Mar 02 Sat, 17:34:23: PER Loss Weight = 0.1
+2024 Mar 02 Sat, 17:34:23: FER Loss Weight = 0.1
+2024 Mar 02 Sat, 17:34:23: Num of Epoch = 20
+2024 Mar 02 Sat, 17:34:23: Batch Size = 2
+2024 Mar 02 Sat, 17:34:23: Updating Frequency = 1
+2024 Mar 02 Sat, 17:34:23: New Learning Rate = 0.0001
+2024 Mar 02 Sat, 17:34:23: Pretrained Learning Rate = 5e-05
+2024 Mar 02 Sat, 17:34:23: Warmup Ratio = 0.06
+2024 Mar 02 Sat, 17:34:23: Max Gradient Norm = 1.0
+2024 Mar 02 Sat, 17:34:23: --------------------
+2024 Mar 02 Sat, 17:34:23: Initialize Relevant Objects
+2024 Mar 02 Sat, 17:34:23: --------------------
+2024 Mar 02 Sat, 17:34:27: Start Training Epoch 0
+2024 Mar 02 Sat, 17:34:27: --------------------
+2024 Mar 02 Sat, 17:34:38: Finish Training Epoch 0 | Report Batch 0 | Loss 4.9304
+2024 Mar 02 Sat, 17:36:11: ====================
+2024 Mar 02 Sat, 17:36:11: Start Main DocRED
+2024 Mar 02 Sat, 17:36:11: --------------------
+2024 Mar 02 Sat, 17:36:11: Seed = 2021
+2024 Mar 02 Sat, 17:36:11: Transformer = bert-base-cased
+2024 Mar 02 Sat, 17:36:11: Hidden Dim = 768
+2024 Mar 02 Sat, 17:36:11: Bilinear Block Size = 64
+2024 Mar 02 Sat, 17:36:11: RE Max Relations = 4
+2024 Mar 02 Sat, 17:36:11: CR Focal Gamma = 2
+2024 Mar 02 Sat, 17:36:11: PER Focal Gamma = 2
+2024 Mar 02 Sat, 17:36:11: FER Threshold = 0.5
+2024 Mar 02 Sat, 17:36:11: CR Loss Weight = 0.1
+2024 Mar 02 Sat, 17:36:11: ET Loss Weight = 0.1
+2024 Mar 02 Sat, 17:36:11: PER Loss Weight = 0.1
+2024 Mar 02 Sat, 17:36:11: FER Loss Weight = 0.1
+2024 Mar 02 Sat, 17:36:11: Num of Epoch = 20
+2024 Mar 02 Sat, 17:36:11: Batch Size = 1
+2024 Mar 02 Sat, 17:36:11: Updating Frequency = 1
+2024 Mar 02 Sat, 17:36:11: New Learning Rate = 0.0001
+2024 Mar 02 Sat, 17:36:11: Pretrained Learning Rate = 5e-05
+2024 Mar 02 Sat, 17:36:11: Warmup Ratio = 0.06
+2024 Mar 02 Sat, 17:36:11: Max Gradient Norm = 1.0
+2024 Mar 02 Sat, 17:36:11: --------------------
+2024 Mar 02 Sat, 17:36:11: Initialize Relevant Objects
+2024 Mar 02 Sat, 17:36:11: --------------------
+2024 Mar 02 Sat, 17:36:15: Start Training Epoch 0
+2024 Mar 02 Sat, 17:36:15: --------------------
+2024 Mar 02 Sat, 17:36:24: Finish Training Epoch 0 | Report Batch 0 | Loss 4.9366

@@ -1,0 +1,48 @@
+2024 Mar 02 Sat, 16:09:02: ====================
+2024 Mar 02 Sat, 16:09:02: Start Prepare DocRED
+2024 Mar 02 Sat, 16:09:02: --------------------
+2024 Mar 02 Sat, 16:09:02: Transformer = bert-base-cased
+2024 Mar 02 Sat, 16:09:02: Max Sequence Length = 1024
+2024 Mar 02 Sat, 16:09:02: --------------------
+2024 Mar 02 Sat, 16:09:32: Start Preprocessing the Dataset
+2024 Mar 02 Sat, 16:09:32: --------------------
+2024 Mar 02 Sat, 16:09:33: Start Constructing Doc Inputs for train_annotated Files
+2024 Mar 02 Sat, 16:09:33: Finish Constructing 0 Doc Inputs for train_annotated Files
+2024 Mar 02 Sat, 16:09:34: Finish Constructing 200 Doc Inputs for train_annotated Files
+2024 Mar 02 Sat, 16:09:36: Finish Constructing 400 Doc Inputs for train_annotated Files
+2024 Mar 02 Sat, 16:09:37: Finish Constructing 600 Doc Inputs for train_annotated Files
+2024 Mar 02 Sat, 16:09:38: Finish Constructing 800 Doc Inputs for train_annotated Files
+2024 Mar 02 Sat, 16:09:39: Finish Constructing 1000 Doc Inputs for train_annotated Files
+2024 Mar 02 Sat, 16:09:41: Finish Constructing 1200 Doc Inputs for train_annotated Files
+2024 Mar 02 Sat, 16:09:43: Finish Constructing 1400 Doc Inputs for train_annotated Files
+2024 Mar 02 Sat, 16:09:44: Finish Constructing 1600 Doc Inputs for train_annotated Files
+2024 Mar 02 Sat, 16:09:45: Finish Constructing 1800 Doc Inputs for train_annotated Files
+2024 Mar 02 Sat, 16:09:47: Finish Constructing 2000 Doc Inputs for train_annotated Files
+2024 Mar 02 Sat, 16:09:48: Finish Constructing 2200 Doc Inputs for train_annotated Files
+2024 Mar 02 Sat, 16:09:50: Finish Constructing 2400 Doc Inputs for train_annotated Files
+2024 Mar 02 Sat, 16:09:51: Finish Constructing 2600 Doc Inputs for train_annotated Files
+2024 Mar 02 Sat, 16:09:52: Finish Constructing 2800 Doc Inputs for train_annotated Files
+2024 Mar 02 Sat, 16:09:53: Finish Constructing 3000 Doc Inputs for train_annotated Files
+2024 Mar 02 Sat, 16:09:56: Finish Constructing Doc Inputs for train_annotated Files
+2024 Mar 02 Sat, 16:09:56: --------------------
+2024 Mar 02 Sat, 16:09:57: Start Constructing Doc Inputs for dev Files
+2024 Mar 02 Sat, 16:09:57: Finish Constructing 0 Doc Inputs for dev Files
+2024 Mar 02 Sat, 16:09:58: Finish Constructing 200 Doc Inputs for dev Files
+2024 Mar 02 Sat, 16:09:59: Finish Constructing 400 Doc Inputs for dev Files
+2024 Mar 02 Sat, 16:10:00: Finish Constructing 600 Doc Inputs for dev Files
+2024 Mar 02 Sat, 16:10:02: Finish Constructing 800 Doc Inputs for dev Files
+2024 Mar 02 Sat, 16:10:04: Finish Constructing Doc Inputs for dev Files
+2024 Mar 02 Sat, 16:10:04: --------------------
+2024 Mar 02 Sat, 16:10:04: Start Constructing Doc Inputs for test Files
+2024 Mar 02 Sat, 16:10:04: Finish Constructing 0 Doc Inputs for test Files
+2024 Mar 02 Sat, 16:10:06: Finish Constructing 200 Doc Inputs for test Files
+2024 Mar 02 Sat, 16:10:07: Finish Constructing 400 Doc Inputs for test Files
+2024 Mar 02 Sat, 16:10:09: Finish Constructing 600 Doc Inputs for test Files
+2024 Mar 02 Sat, 16:10:10: Finish Constructing 800 Doc Inputs for test Files
+2024 Mar 02 Sat, 16:10:12: Finish Constructing Doc Inputs for test Files
+2024 Mar 02 Sat, 16:10:12: --------------------
+2024 Mar 02 Sat, 16:10:12: Finish Preparing dev_ins
+2024 Mar 02 Sat, 16:10:17: Finish Preparing Entity & Relation Type Embeddings
+2024 Mar 02 Sat, 16:10:17: --------------------
+2024 Mar 02 Sat, 16:10:17: Finish Prepare DocRED
+2024 Mar 02 Sat, 16:10:17: ====================
