@@ -29,7 +29,8 @@ if __name__ == '__main__':
 	}
 
 	con = configs.Config(args)
-	con.set_max_epoch(200)
+	con.set_max_epoch(10)
+	con.set_batch_size(24)
 	con.load_train_data()
 	con.load_test_data()
 	# con.set_train_model()
