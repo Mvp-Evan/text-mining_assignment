@@ -727,8 +727,6 @@ class Config(object):
 
 		return f1, auc, pr_x, pr_y
 
-
-
 	def testall(self, model_pattern, model_name, input_theta):#, ignore_input_theta):
 		model = model_pattern(config = self)
 
