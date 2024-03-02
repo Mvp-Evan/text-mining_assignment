@@ -94,6 +94,8 @@ class Config(object):
 		self.train_prefix = args.train_prefix
 		self.test_prefix = args.test_prefix
 
+		self.device = torch.device("mps" if self.use_gpu else "cpu")
+
 
 		if not os.path.exists("log"):
 			os.mkdir("log")
@@ -187,22 +189,22 @@ class Config(object):
 	def get_train_batch(self):
 		random.shuffle(self.train_order)
 
-		context_idxs = torch.LongTensor(self.batch_size, self.max_length).cuda()
-		context_pos = torch.LongTensor(self.batch_size, self.max_length).cuda()
-		h_mapping = torch.Tensor(self.batch_size, self.h_t_limit, self.max_length).cuda()
-		t_mapping = torch.Tensor(self.batch_size, self.h_t_limit, self.max_length).cuda()
-		relation_multi_label = torch.Tensor(self.batch_size, self.h_t_limit, self.relation_num).cuda()
-		relation_mask = torch.Tensor(self.batch_size, self.h_t_limit).cuda()
+		context_idxs = torch.LongTensor(self.batch_size, self.max_length).to(self.device)
+		context_pos = torch.LongTensor(self.batch_size, self.max_length).to(self.device)
+		h_mapping = torch.Tensor(self.batch_size, self.h_t_limit, self.max_length).to(self.device)
+		t_mapping = torch.Tensor(self.batch_size, self.h_t_limit, self.max_length).to(self.device)
+		relation_multi_label = torch.Tensor(self.batch_size, self.h_t_limit, self.relation_num).to(self.device)
+		relation_mask = torch.Tensor(self.batch_size, self.h_t_limit).to(self.device)
 
-		pos_idx = torch.LongTensor(self.batch_size, self.max_length).cuda()
+		pos_idx = torch.LongTensor(self.batch_size, self.max_length).to(self.device)
 
-		context_ner = torch.LongTensor(self.batch_size, self.max_length).cuda()
-		context_char_idxs = torch.LongTensor(self.batch_size, self.max_length, self.char_limit).cuda()
+		context_ner = torch.LongTensor(self.batch_size, self.max_length).to(self.device)
+		context_char_idxs = torch.LongTensor(self.batch_size, self.max_length, self.char_limit).to(self.device)
 
-		relation_label = torch.LongTensor(self.batch_size, self.h_t_limit).cuda()
+		relation_label = torch.LongTensor(self.batch_size, self.h_t_limit).to(self.device)
 
 
-		ht_pair_pos = torch.LongTensor(self.batch_size, self.h_t_limit).cuda()
+		ht_pair_pos = torch.LongTensor(self.batch_size, self.h_t_limit).to(self.device)
 
 		for b in range(self.train_batches):
 			start_id = b * self.batch_size
@@ -425,7 +427,7 @@ class Config(object):
 		ori_model = model_pattern(config = self)
 		if self.pretrain_model != None:
 			ori_model.load_state_dict(torch.load(self.pretrain_model))
-		ori_model.cuda()
+		ori_model.to(self.device)
 		model = nn.DataParallel(ori_model)
 
 		optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()))
