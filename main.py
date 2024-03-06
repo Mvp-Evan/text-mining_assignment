@@ -4,11 +4,14 @@ from train import train
 
 
 def main():
-    generate_data()
+    # if you want to generate data, run this line
+    # generate_data()
+
     # model_name = 'BERT' or 'LSTM'
     # device = 'mps', 'cuda' or 'cpu'
     train('BERT', 'mps')
 
+    # if you want to evaluate the model, run this line
     evaluate()
 
 
