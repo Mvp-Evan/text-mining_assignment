@@ -5,7 +5,7 @@ from train import train
 
 def main():
     # if you want to generate data, run this line
-    # generate_data()
+    #generate_data(device='mps')
 
     # model_name = 'BERT' or 'LSTM'
     # device = 'mps', 'cuda' or 'cpu'

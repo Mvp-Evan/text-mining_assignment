@@ -18,11 +18,11 @@ class Bert():
     SEP = "[SEP]"
 
 
-    def __init__(self, model_class, model_name):
+    def __init__(self, model_class, model_name, device='mps'):
         super().__init__()
         self.model_name = model_name
         self.tokenizer = BertTokenizer.from_pretrained(self.model_name)
-        self.model = model_class.from_pretrained(model_name).to(torch.device("mps"))
+        self.model = model_class.from_pretrained(model_name).to(torch.device(device))
         self.max_len = self.model.embeddings.position_embeddings.weight.size(0)
         self.dim = self.model.embeddings.position_embeddings.weight.size(1)
 

@@ -6,7 +6,7 @@ import argparse
 
 from tqdm import trange
 from transformers import *
-from BERT_config import Bert
+from configs.BERT_config import Bert
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--in_path', type = str, default =  "./data")
@@ -31,8 +31,6 @@ json.dump(id2rel, open(os.path.join(out_path, 'id2rel.json'), "w"))
 fact_in_train = set([])
 fact_in_dev_train = set([])
 
-bert = Bert(BertModel, 'bert-base-uncased')
-
 def sents_2_idx(sents, word2id):
     #sents_idx = np.zeros([sent_limit, word_size]) + word2id['BLANK']
     sents_idx = []
@@ -42,7 +40,8 @@ def sents_2_idx(sents, word2id):
         start_idx += len(sent)
     return sents_idx
 
-def init(data_file_name, rel2id, max_length = 512, is_training = True, suffix=''):
+def init(data_file_name, rel2id, max_length = 512, is_training = True, suffix='', device='mps'):
+    bert = Bert(BertModel, 'bert-base-uncased', device=device)
 
     ori_data = json.load(open(data_file_name))
 
@@ -214,10 +213,10 @@ def init(data_file_name, rel2id, max_length = 512, is_training = True, suffix=''
     print("Finish saving")
 
 
-def generate_data():
-    init(train_distant_file_name, rel2id, max_length = 512, is_training = True, suffix='')
-    init(train_annotated_file_name, rel2id, max_length = 512, is_training = False, suffix='_train')
-    init(dev_file_name, rel2id, max_length = 512, is_training = False, suffix='_dev')
-    init(test_file_name, rel2id, max_length = 512, is_training = False, suffix='_test')
+def generate_data(device='mps'):
+    init(train_distant_file_name, rel2id, max_length = 512, is_training = True, suffix='', device=device)
+    init(train_annotated_file_name, rel2id, max_length = 512, is_training = False, suffix='_train', device=device)
+    init(dev_file_name, rel2id, max_length = 512, is_training = False, suffix='_dev', device=device)
+    init(test_file_name, rel2id, max_length = 512, is_training = False, suffix='_test', device=device)
 
 
