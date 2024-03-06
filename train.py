@@ -25,6 +25,8 @@ if __name__ == '__main__':
 	args = parser.parse_args()
 	model = {
 		'LSTM': models.LSTM,
+		'BERT': models.BERT,
+		'ContextAware': models.ContextAware,
 	}
 
 	con = configs.Config(args)
