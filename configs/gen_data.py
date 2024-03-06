@@ -9,8 +9,8 @@ from transformers import *
 from BERT_config import Bert
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--in_path', type = str, default =  "../data")
-parser.add_argument('--out_path', type = str, default = "../data")
+parser.add_argument('--in_path', type = str, default =  "./data")
+parser.add_argument('--out_path', type = str, default = "./data")
 
 args = parser.parse_args()
 in_path = args.in_path
@@ -214,10 +214,10 @@ def init(data_file_name, rel2id, max_length = 512, is_training = True, suffix=''
     print("Finish saving")
 
 
-
-init(train_distant_file_name, rel2id, max_length = 512, is_training = True, suffix='')
-init(train_annotated_file_name, rel2id, max_length = 512, is_training = False, suffix='_train')
-init(dev_file_name, rel2id, max_length = 512, is_training = False, suffix='_dev')
-init(test_file_name, rel2id, max_length = 512, is_training = False, suffix='_test')
+def generate_data():
+    init(train_distant_file_name, rel2id, max_length = 512, is_training = True, suffix='')
+    init(train_annotated_file_name, rel2id, max_length = 512, is_training = False, suffix='_train')
+    init(dev_file_name, rel2id, max_length = 512, is_training = False, suffix='_dev')
+    init(test_file_name, rel2id, max_length = 512, is_training = False, suffix='_test')
 
 

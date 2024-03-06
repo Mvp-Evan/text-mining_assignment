@@ -1,3 +1,5 @@
+import torch
+
 import configs
 import models
 import numpy as np
@@ -13,10 +15,11 @@ import argparse
 
 # sys.excepthook = IPython.core.ultratb.FormattedTB(mode='Verbose', color_scheme='Linux', call_pdb=1)
 
-if __name__ == '__main__':
+
+def train(model_name='BERT', device='mps'):
 	parser = argparse.ArgumentParser()
-	parser.add_argument('--model_name', type = str, default = 'BERT', help = 'name of the models')
-	parser.add_argument('--save_name', type = str, default = 'BERT')
+	parser.add_argument('--model_name', type = str, default = model_name, help = 'name of the models')
+	parser.add_argument('--save_name', type = str, default = model_name)
 
 	parser.add_argument('--train_prefix', type = str, default = 'dev_train')
 	parser.add_argument('--test_prefix', type = str, default = 'dev_dev')
@@ -30,6 +33,7 @@ if __name__ == '__main__':
 	}
 
 	con = configs.Config(args)
+	con.device = torch.device(device)
 	con.set_max_epoch(10)
 	con.set_batch_size(24)
 	con.load_train_data()
