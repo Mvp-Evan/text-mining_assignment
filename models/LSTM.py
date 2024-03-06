@@ -52,9 +52,9 @@ class LSTM(nn.Module):
         # sent = torch.cat([self.word_emb(context_idxs), context_ch], dim=-1)
 
         context_mask = (context_idxs > 0).float()
-        context_output = self.vae(sent)
+        context_output = self.vae(sent)  # VAE to enhance the representation learning
         context_output = self.rnn(context_output, context_lens)
-        context_output = self.attention(context_output, context_output, context_mask)
+        context_output = self.attention(context_output, context_output, context_mask)  # Bi-attention
         context_output = torch.relu(self.linear_re(context_output))
 
         start_re_output = torch.matmul(h_mapping, context_output)
