@@ -13,7 +13,7 @@ from torch.nn.utils import rnn
 
 class LSTM_UP(nn.Module):
     def __init__(self, config):
-        super(LSTM, self).__init__()
+        super(LSTM_UP, self).__init__()
         self.config = config
 
         word_vec_size = config.data_word_vec.shape[0]
