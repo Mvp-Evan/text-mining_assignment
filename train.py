@@ -36,7 +36,7 @@ def train(model_name='BERT', device='mps'):
 	con = configs.Config(args)
 	con.device = torch.device(device)
 	con.set_max_epoch(100)
-	con.set_batch_size(24)
+	con.set_batch_size(8)
 	con.load_train_data()
 	con.load_test_data()
 	# con.set_train_model()

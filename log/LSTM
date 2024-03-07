@@ -16,3 +16,6 @@ ALL  : Theta 0.0314 | F1 0.0512 | AUC 0.0146
 Ignore ma_f1 0.0462 | input_theta 0.0314 test_result F1 0.0458 | AUC 0.0115
 ALL  : Theta 0.0294 | F1 0.0517 | AUC 0.0147
 Ignore ma_f1 0.0462 | input_theta 0.0294 test_result F1 0.0456 | AUC 0.0117
+ALL  : Theta 0.0482 | F1 0.0482 | AUC 0.0172
+ALL  : Theta 0.0482 | F1 0.0482 | AUC 0.0172
+Ignore ma_f1 0.0412 | input_theta 0.0482 test_result F1 0.0399 | AUC 0.0137

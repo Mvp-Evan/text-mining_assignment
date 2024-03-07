@@ -1052,7 +1052,7 @@ class Config(object):
         f1, auc, pr_x, pr_y = self.test(model, model_name, True, input_theta, two_phase, pretrain_model)
 
 
-    def test_predect(self, model_pattern, model_name, input_theta, two_phase=False, pretrain_model_name=None):
+    def test_predect(self, model_pattern, model_name, input_theta, output=False, two_phase=False, pretrain_model_name=None):
         pretrain_model = None
         if two_phase:
             pretrain_model = model_pattern(config=self)
@@ -1068,7 +1068,7 @@ class Config(object):
 
         data_idx = 0
         eval_start_time = time.time()
-        # test_result_ignore = []
+        test_result_ignore = []
         total_recall_ignore = 0
 
         test_result = []
@@ -1128,7 +1128,10 @@ class Config(object):
 
             predict_re = predict_re.data.cpu().numpy()
 
-            # compress predict result to label
+            print("predict_re: ", predict_re.shape)
+
+            is_rel_exist = is_rel_exist.cpu().numpy() if two_phase else None
+
             for i in range(len(labels)):
                 label = labels[i]
                 index = indexes[i]
@@ -1160,19 +1163,19 @@ class Config(object):
                                     if label[(h_idx, t_idx, r)] == True:
                                         intrain = True
 
+                                if not intrain:
+                                    test_result_ignore.append( ((h_idx, t_idx, r) in label, float(predict_re[i,j,r]),  titles[i], self.id2rel[r], index, h_idx, t_idx, r) )
+
                                 if two_phase:
                                     if is_rel_exist[i, j, 1] > is_rel_exist[i, j, 0]:
-                                        test_result.append(
-                                            ((h_idx, t_idx, r) in label, float(predict_re[i, j, r]), intrain, titles[i],
-                                             self.id2rel[r], index, h_idx, t_idx, r))
+                                        test_result.append(((h_idx, t_idx, r) in label, float(predict_re[i, j, r]),
+                                                            intrain, titles[i], self.id2rel[r], index, h_idx, t_idx, r))
                                     else:
-                                        test_result.append(
-                                            ((h_idx, t_idx, r) in label, -100.0, intrain, titles[i], self.id2rel[r],
-                                             index, h_idx, t_idx, r))
+                                        test_result.append(((h_idx, t_idx, r) in label, -100.0, intrain, titles[i],
+                                                            self.id2rel[r], index, h_idx, t_idx, r))
                                 else:
-                                    test_result.append(
-                                        ((h_idx, t_idx, r) in label, float(predict_re[i, j, r]), intrain, titles[i],
-                                         self.id2rel[r], index, h_idx, t_idx, r))
+                                    test_result.append(((h_idx, t_idx, r) in label, float(predict_re[i, j, r]), intrain,
+                                                        titles[i], self.id2rel[r], index, h_idx, t_idx, r))
 
                             if flag:
                                 have_label += 1
@@ -1185,9 +1188,20 @@ class Config(object):
                 print('| step {:3d} | time: {:5.2f}'.format(data_idx // self.period, (time.time() - eval_start_time)))
                 eval_start_time = time.time()
 
+        test_result_ignore.sort(key=lambda x: x[1], reverse=True)
         test_result.sort(key=lambda x: x[1], reverse=True)
-        output = [{'index': x[-4], 'h_idx': x[-3], 't_idx': x[-2], 'r_idx': x[-1], 'r': x[-5], 'title': x[-6]} for x in test_result]
-        print(output)
+
+        w = 0
+        for i, item in enumerate(test_result):
+            if item[1] > input_theta:
+                w = i
+
+        if output:
+            # output = [x[-4:] for x in test_result[:w+1]]
+            output = [{'index': x[-4], 'h_idx': x[-3], 't_idx': x[-2], 'r_idx': x[-1], 'r': x[-5], 'title': x[-6]} for x
+                      in test_result[:w + 1]]
+            print(output)
+
 
     def add_attr(self, attr_list, key, values):
         for i, v in enumerate(values):

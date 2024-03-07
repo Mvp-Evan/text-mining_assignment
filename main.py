@@ -1,5 +1,6 @@
 import argparse
 import json
+import random
 
 from nltk import word_tokenize, PorterStemmer, download, pos_tag
 from nltk.corpus import stopwords
@@ -9,6 +10,14 @@ from configs import generate_test_predict
 from test import test, predict
 from train import train
 
+
+def tag_to_type(tag):
+    word_types = ["ORG", "LOC", "TIME", "PER", "MISC", "NUM"]
+    if tag in ['NN', 'NNS', 'NNP', 'NNPS']:
+        return random.choice(word_types)
+
+    else:
+        return 'BLANK'
 
 def tokenize_data(text, title, output_file):
     download('punkt')
@@ -42,34 +51,31 @@ def tokenize_data(text, title, output_file):
     for i, sentence in enumerate(sentences):
         # tag the sentence
         tagged_sentence = pos_tag(sentence)
+        vertexs = []
         for j, (word, tag) in enumerate(tagged_sentence):
             # find pos end
             if j == 0:
                 pos = [0, len(word)]
             else:
-                pos = [vertexSet[-1]['pos'][1], vertexSet[-1]['pos'][1] + len(word)]
+                pos = [vertexs[-1]['pos'][1], vertexs[-1]['pos'][1] + len(word)]
 
-            # Check if the tag is in ner2id
-            if tag in ner2id:
-                type_ = tag
-            else:
-                type_ = 'BLANK'  # use a default type
-
+            type_ = tag_to_type(tag)
             vertex = {
                 'name': word,
                 'pos': pos,
                 'sent_id': i,
                 'type': type_
             }
-            vertexSet.append(vertex)
+            vertexs.append(vertex)
+        vertexSet.append(vertexs)
 
     data = {
         'sents': sentences,
         'title': title,
-        'vertexSet': [vertexSet]
+        'vertexSet': vertexSet
     }
 
-    with open(output_file, 'a+') as f:
+    with open(output_file, 'w') as f:
         json.dump([data], f)
 
 
@@ -83,8 +89,8 @@ def data_preprocess(text, title, output_file='./data/test_predict.json', device=
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--run_type', type=str, default='test')
-    parser.add_argument('--model_name', type=str, default='LSTM')
+    parser.add_argument('--run_type', type=str, default='predict')
+    parser.add_argument('--model_name', type=str, default='LSTM_UP')
     parser.add_argument('--need_generate_data', type=bool, default=False)
     parser.add_argument('--device', type=str, default='mps')
 
@@ -102,16 +108,9 @@ def main():
         test(args.model_name, args.device)
     elif args.run_type == 'predict':
         output_file = './data/test_predict.json'
-        with open(output_file, 'w') as f:
-            f.write('')
-
-        while True:
-            title = input('Please input the title of the text you want to predict: ')
-            text = input('Please input the text you want to predict: ')
-            stop = input('Add more text? (entre \'yes\' to continue): ')
-            if stop != 'yes':
-                break
-            data_preprocess(text, title, output_file, args.device)
+        title = input('Please input the title of the text you want to predict: ')
+        text = input('Please input the text you want to predict: ')
+        data_preprocess(text, title, output_file, args.device)
         predict(args.model_name, args.device)
 
 

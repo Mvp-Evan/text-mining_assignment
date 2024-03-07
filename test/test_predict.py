@@ -41,4 +41,4 @@ def predict(model_name='BERT', device='mps'):
     con.load_predict_data()
     # con.set_train_model()
     pretrain_model_name = model_name
-    con.test_predect(model[args.model_name], args.save_name, args.input_theta, args.two_phase, pretrain_model_name)#, args.ignore_input_theta)
+    con.test_predect(model[args.model_name], args.save_name, args.input_theta, True, args.two_phase, pretrain_model_name)#, args.ignore_input_theta)
