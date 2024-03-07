@@ -5,13 +5,13 @@ pip install -r requirements.txt
 ```
 
 # Data and model preparation
-Please download the data from Google Drive and put it in the `./data` folder. The data can be downloaded from [here](https://drive.google.com/drive/folders/1)
+Please download the data from Google Drive and put it in the `./data` folder. The data can be downloaded from [here](https://drive.google.com/drive/folders/1AC6sN87-FcfLcr_9SWqVO4yX49wPXKKl?usp=sharing)
 
-Please download the model weights from Google Drive and put it in the `./checkpoint` folder. The model weights can be downloaded from [here](https://drive.google.com/drive/folders/1)
+Please download the model weights from Google Drive and put it in the `./checkpoint` folder. The model weights can be downloaded from [here](https://drive.google.com/drive/folders/1kZN6OfedEjPhP8DG_yclB5_BM02LNKmv?usp=share_link)
 
 # Run the code
 This project data provide two updated methods of LSTM and BERT. You can follow the instructions below to train, test and predict via run `./main.py`.
-There are three arguments you can use for main.py:
+There are four arguments you can use for main.py:
 - `--model`: the model you want to use, you can choose from `LSTM` and `BERT`
 - `--need_generate_data`: whether you want to generate the data, you can choose from `True` and `False`
 - `--run_type`: the mode you want to use, you can choose from `train`, `test` and `predict`

@@ -1,0 +1,1 @@
+Please download the model weights from Google Drive and put it in the `./checkpoint` folder. The model weights can be downloaded from [here](https://drive.google.com/drive/folders/1kZN6OfedEjPhP8DG_yclB5_BM02LNKmv?usp=share_link)
