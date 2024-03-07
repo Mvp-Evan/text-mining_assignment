@@ -28,14 +28,6 @@ class BERT(nn.Module):
         self.use_coreference = True
         self.use_distance = True
 
-        # performance is similar with char_embed
-        # self.char_emb = nn.Embedding(config.data_char_vec.shape[0], config.data_char_vec.shape[1])
-        # self.char_emb.weight.data.copy_(torch.from_numpy(config.data_char_vec))
-
-        # char_dim = config.data_char_vec.shape[1]
-        # char_hidden = 100
-        # self.char_cnn = nn.Conv1d(char_dim,  char_hidden, 5)
-
         hidden_size = 128
         #hidden_size = 768
         bert_hidden_size = 768
@@ -57,7 +49,6 @@ class BERT(nn.Module):
         #self.sent_rnn = EncoderLSTM(input_size, hidden_size, 1, True, True, 1 - config.keep_prob, False)
         #self.att_enc = SimpleEncoder(input_size, 4, 1)
         self.bert = BertModel.from_pretrained('bert-base-uncased')
-        #self.linear_re = nn.Linear(bert_hidden_size+config.coref_size+config.entity_type_size, hidden_size)
         self.linear_re = nn.Linear(bert_hidden_size, hidden_size)
         #self.ent_att_enc = SimpleEncoder(hidden_size*2, 4, 1)
 
@@ -81,32 +72,6 @@ class BERT(nn.Module):
 
     def forward(self, context_idxs, pos, context_ner, context_char_idxs, context_lens, h_mapping, t_mapping,
                 relation_mask, dis_h_2_t, dis_t_2_h, sent_idxs, sent_lengths, reverse_sent_idxs, context_masks, context_starts):
-        # para_size, char_size, bsz = context_idxs.size(1), context_char_idxs.size(2), context_idxs.size(0)
-        # context_ch = self.char_emb(context_char_idxs.contiguous().view(-1, char_size)).view(bsz * para_size, char_size, -1)
-        # context_ch = self.char_cnn(context_ch.permute(0, 2, 1).contiguous()).max(dim=-1)[0].view(bsz, para_size, -1)
-
-        '''
-        sent = self.word_emb(context_idxs)
-        if self.use_coreference:
-            sent = torch.cat([sent, self.entity_embed(pos)], dim=-1)
-
-        if self.use_entity_type:
-            sent = torch.cat([sent, self.ner_emb(context_ner)], dim=-1)
-
-        batch_size, sent_limit, word_size = sent_idxs.size()
-        #print(batch_size, h_t_num, word_size)
-        i_ = torch.arange(batch_size).view(-1,1,1).expand(-1,sent_limit,word_size)
-        #print(i_[:5,:5,:5])
-        batch_sents = sent[i_, sent_idxs]
-        #print(batch_sents.size())
-        batch_sents = batch_sents.view(-1, word_size, self.input_size)
-        flatten_sents_lengths = sent_lengths.view(-1)
-        sent_emb = self.rnn(batch_sents, flatten_sents_lengths)
-        #print(sent_emb.size())
-        sent_emb = sent_emb.view(batch_size, sent_limit*word_size, -1)
-        i_ = torch.arange(batch_size).view(-1,1).expand(reverse_sent_idxs.size())
-        sent_emb = sent_emb[i_, reverse_sent_idxs]
-        '''
 
         # sent = torch.cat([sent, context_ch], dim=-1)
         #print(context_idxs.size())

@@ -59,7 +59,7 @@ def init(data_file_name, rel2id, max_length = 512, is_training = True, suffix=''
             L += len(x)
             Ls.append(L)
 
-        vertexSet =  ori_data[i]['vertexSet']
+        vertexSet = ori_data[i]['vertexSet']
         # point position added with sent start position
         for j in range(len(vertexSet)):
             for k in range(len(vertexSet[j])):

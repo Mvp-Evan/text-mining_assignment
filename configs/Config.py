@@ -79,6 +79,7 @@ class Config(object):
         self.test_batch_size = self.batch_size
         self.predict_batch_size = self.batch_size
         self.test_relation_limit = 1800
+        self.predict_relation_limit = 1800
         self.char_limit = 16
         self.sent_limit = 25
         #self.combined_sent_limit = 200
@@ -877,8 +878,11 @@ class Config(object):
                     is_rel_exist = pretrain_model(context_idxs, context_pos, context_ner, context_char_idxs, input_lengths,
                                    h_mapping, t_mapping, relation_mask, dis_h_2_t, dis_t_2_h, sent_idxs, sent_lengths, reverse_sent_idxs, context_masks, context_starts)
 
-                predict_re = model(context_idxs, context_pos, context_ner, context_char_idxs, input_lengths,
+                if model_name == 'BERT':
+                    predict_re = model(context_idxs, context_pos, context_ner, context_char_idxs, input_lengths,
                                    h_mapping, t_mapping, relation_mask, dis_h_2_t, dis_t_2_h, sent_idxs, sent_lengths, reverse_sent_idxs, context_masks, context_starts)
+                else:
+                    predict_re = model(context_idxs, context_pos, context_ner, context_char_idxs, input_lengths, h_mapping, t_mapping, relation_mask, dis_h_2_t, dis_t_2_h)
 
                 predict_re = torch.sigmoid(predict_re)
 
@@ -1035,13 +1039,13 @@ class Config(object):
         pretrain_model = None
         if two_phase:
             pretrain_model = model_pattern(config = self)
-            pretrain_model.load_state_dict(torch.load(os.path.join(self.checkpoint_dir, pretrain_model_name)))
+            pretrain_model.load_state_dict(torch.load(os.path.join(self.checkpoint_dir, pretrain_model_name), map_location=self.device))
             pretrain_model.to(self.device)
             pretrain_model.eval()
 
         model = model_pattern(config = self)
 
-        model.load_state_dict(torch.load(os.path.join(self.checkpoint_dir, model_name)))
+        model.load_state_dict(torch.load(os.path.join(self.checkpoint_dir, model_name), map_location=self.device))
         model.to(self.device)
         model.eval()
         #self.test_anylyse(model, model_name, True, input_theta)
@@ -1052,13 +1056,13 @@ class Config(object):
         pretrain_model = None
         if two_phase:
             pretrain_model = model_pattern(config=self)
-            pretrain_model.load_state_dict(torch.load(os.path.join(self.checkpoint_dir, pretrain_model_name)))
+            pretrain_model.load_state_dict(torch.load(os.path.join(self.checkpoint_dir, pretrain_model_name), map_location=self.device))
             pretrain_model.to(self.device)
             pretrain_model.eval()
 
         model = model_pattern(config=self)
 
-        model.load_state_dict(torch.load(os.path.join(self.checkpoint_dir, model_name)))
+        model.load_state_dict(torch.load(os.path.join(self.checkpoint_dir, model_name), map_location=self.device))
         model.to(self.device)
         model.eval()
 
@@ -1112,15 +1116,78 @@ class Config(object):
                                                   h_mapping, t_mapping, relation_mask, dis_h_2_t, dis_t_2_h, sent_idxs,
                                                   sent_lengths, reverse_sent_idxs, context_masks, context_starts)
 
-                predict_re = model(context_idxs, context_pos, context_ner, context_char_idxs, input_lengths,
-                                   h_mapping, t_mapping, relation_mask, dis_h_2_t, dis_t_2_h, sent_idxs, sent_lengths,
-                                   reverse_sent_idxs, context_masks, context_starts)
+                if model_name == 'BERT':
+                    predict_re = model(context_idxs, context_pos, context_ner, context_char_idxs, input_lengths,
+                                       h_mapping, t_mapping, relation_mask, dis_h_2_t, dis_t_2_h, sent_idxs,
+                                       sent_lengths, reverse_sent_idxs, context_masks, context_starts)
+                else:
+                    predict_re = model(context_idxs, context_pos, context_ner, context_char_idxs, input_lengths,
+                                       h_mapping, t_mapping, relation_mask, dis_h_2_t, dis_t_2_h)
 
                 predict_re = torch.sigmoid(predict_re)
 
             predict_re = predict_re.data.cpu().numpy()
 
-            print(predict_re)
+            # compress predict result to label
+            for i in range(len(labels)):
+                label = labels[i]
+                index = indexes[i]
+
+                total_recall += len(label)
+                for l in label.values():
+                    if not l:
+                        total_recall_ignore += 1
+
+                L = L_vertex[i]
+                j = 0
+
+                for h_idx in range(L):
+                    for t_idx in range(L):
+                        if h_idx != t_idx:
+                            r = np.argmax(predict_re[i, j])
+                            predicted_as_zero += r == 0
+                            total_ins_num += 1
+                            if (h_idx, t_idx, r) in label:
+                                top1_acc += 1
+
+                            flag = False
+
+                            for r in range(1, self.relation_num):
+                                intrain = False
+
+                                if (h_idx, t_idx, r) in label:
+                                    flag = True
+                                    if label[(h_idx, t_idx, r)] == True:
+                                        intrain = True
+
+                                if two_phase:
+                                    if is_rel_exist[i, j, 1] > is_rel_exist[i, j, 0]:
+                                        test_result.append(
+                                            ((h_idx, t_idx, r) in label, float(predict_re[i, j, r]), intrain, titles[i],
+                                             self.id2rel[r], index, h_idx, t_idx, r))
+                                    else:
+                                        test_result.append(
+                                            ((h_idx, t_idx, r) in label, -100.0, intrain, titles[i], self.id2rel[r],
+                                             index, h_idx, t_idx, r))
+                                else:
+                                    test_result.append(
+                                        ((h_idx, t_idx, r) in label, float(predict_re[i, j, r]), intrain, titles[i],
+                                         self.id2rel[r], index, h_idx, t_idx, r))
+
+                            if flag:
+                                have_label += 1
+
+                            j += 1
+
+            data_idx += 1
+
+            if data_idx % self.period == 0:
+                print('| step {:3d} | time: {:5.2f}'.format(data_idx // self.period, (time.time() - eval_start_time)))
+                eval_start_time = time.time()
+
+        test_result.sort(key=lambda x: x[1], reverse=True)
+        output = [{'index': x[-4], 'h_idx': x[-3], 't_idx': x[-2], 'r_idx': x[-1], 'r': x[-5], 'title': x[-6]} for x in test_result]
+        print(output)
 
     def add_attr(self, attr_list, key, values):
         for i, v in enumerate(values):

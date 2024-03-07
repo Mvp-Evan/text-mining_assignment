@@ -185,6 +185,8 @@ class EncoderLSTM(nn.Module):
         outputs = []
         if input_lengths is not None:
             lens = input_lengths.data.cpu().numpy()
+            # sort lens in decreasing order
+            lens = np.flip(np.sort(lens), axis=0).copy()
 
         for i in range(self.nlayers):
             hidden, c = self.get_init(bsz, i)
