@@ -1,5 +1,5 @@
 from configs import generate_data
-from evaluation import evaluate
+from test.test import test
 from train import train
 
 
@@ -12,7 +12,7 @@ def main():
     train('BERT', 'mps')
 
     # if you want to evaluate the model, run this line
-    evaluate()
+    test('BERT', 'mps')
 
 
 if __name__ == '__main__':

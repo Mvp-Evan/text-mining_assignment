@@ -865,18 +865,18 @@ class Config(object):
 
 
 
-    def testall(self, model_pattern, model_name, input_theta, two_phase=False, pretrain_model_name=None):#, ignore_input_theta):
+    def testall(self, model_pattern, model_name, input_theta, two_phase=False, pretrain_model_name=None):#, ignore_input_theta
         pretrain_model = None
         if two_phase:
             pretrain_model = model_pattern(config = self)
             pretrain_model.load_state_dict(torch.load(os.path.join(self.checkpoint_dir, pretrain_model_name)))
-            pretrain_model.cuda()
+            pretrain_model.to(self.device)
             pretrain_model.eval()
 
         model = model_pattern(config = self)
 
         model.load_state_dict(torch.load(os.path.join(self.checkpoint_dir, model_name)))
-        model.cuda()
+        model.to(self.device)
         model.eval()
         #self.test_anylyse(model, model_name, True, input_theta)
         f1, auc, pr_x, pr_y = self.test(model, model_name, True, input_theta, two_phase, pretrain_model)
