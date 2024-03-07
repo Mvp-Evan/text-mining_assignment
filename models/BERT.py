@@ -28,8 +28,11 @@ class BERT(nn.Module):
         self.use_coreference = True
         self.use_distance = True
 
-        hidden_size = 128
-        #hidden_size = 768
+        # hidden_size = 128
+
+        hidden_size = 768
+        self.self_attention = SelfAttention(hidden_size)
+
         bert_hidden_size = 768
         input_size = config.data_word_vec.shape[1]
         if self.use_entity_type:
@@ -38,33 +41,23 @@ class BERT(nn.Module):
 
         if self.use_coreference:
             input_size += config.coref_size
-            # self.coref_embed = nn.Embedding(config.max_length, config.coref_size, padding_idx=0)
             self.entity_embed = nn.Embedding(config.max_length, config.coref_size, padding_idx=0)
 
-        # input_size += char_hidden
 
         self.input_size = input_size
-
-        #self.rnn = EncoderLSTM(input_size, hidden_size, 1, True, True, 1 - config.keep_prob, False)
-        #self.sent_rnn = EncoderLSTM(input_size, hidden_size, 1, True, True, 1 - config.keep_prob, False)
-        #self.att_enc = SimpleEncoder(input_size, 4, 1)
         self.bert = BertModel.from_pretrained('bert-base-uncased')
         self.linear_re = nn.Linear(bert_hidden_size, hidden_size)
-        #self.ent_att_enc = SimpleEncoder(hidden_size*2, 4, 1)
 
         if self.use_distance:
             self.dis_embed = nn.Embedding(20, config.dis_size, padding_idx=10)
             self.bili = torch.nn.Bilinear(hidden_size+config.dis_size, hidden_size+config.dis_size, config.relation_num)
-            #self.linear_re = nn.Linear((hidden_size+config.dis_size)*2, config.relation_num)
         else:
-            #self.linear_re = nn.Linear(hidden_size*2, config.relation_num)
             self.bili = torch.nn.Bilinear(hidden_size, hidden_size, config.relation_num)
 
     def mask_lengths(self, batch_size, doc_size, lengths):
         masks = torch.ones(batch_size, doc_size).cuda()
         index_matrix = torch.arange(0, doc_size).expand(batch_size, -1).cuda()
         index_matrix = index_matrix.long()
-        #doc_lengths = torch.tensor(lengths).view(-1,1)
         doc_lengths = lengths.view(-1, 1)
         doc_lengths_matrix = doc_lengths.expand(-1, doc_size)
         masks[torch.ge(index_matrix-doc_lengths_matrix, 0)] = 0
@@ -72,46 +65,15 @@ class BERT(nn.Module):
 
     def forward(self, context_idxs, pos, context_ner, context_char_idxs, context_lens, h_mapping, t_mapping,
                 relation_mask, dis_h_2_t, dis_t_2_h, sent_idxs, sent_lengths, reverse_sent_idxs, context_masks, context_starts):
-
-        # sent = torch.cat([sent, context_ch], dim=-1)
-        #print(context_idxs.size())
         context_output = self.bert(context_idxs, attention_mask=context_masks)[0]
-        #print('output_1',context_output[0])
+                # 应用自注意力机制
+        context_output = self.self_attention(context_output)
         context_output = [layer[starts.nonzero().squeeze(1)]
                    for layer, starts in zip(context_output, context_starts)]
-        #print('output_2',context_output[0])
         context_output = pad_sequence(context_output, batch_first=True, padding_value=-1)
-        #print('output_3',context_output[0])
-        #print(context_output.size())
+
         context_output = torch.nn.functional.pad(context_output,(0,0,0,context_idxs.size(-1)-context_output.size(-2)))
-        #print('output_4',context_output[0])
-        #print(context_output.size())
-        #assert(False)
-        #context_output = self.rnn(sent, context_lens)
-        #context_output = torch.cat([context_output, sent_emb], dim=-1)
-        #context_output = sent_emb
 
-        '''
-        batch_size, doc_size = context_idxs.size()[:2]
-        mask = self.mask_lengths(batch_size, doc_size, context_lens)
-        context_output = self.att_enc(sent, mask)
-        '''
-
-        '''
-        ent_mask = torch.zeros(context_idxs.size()[:2]).cuda()
-        ent_mask[pos>0] = 1
-        context_output = self.ent_att_enc(context_output, ent_mask)
-        '''
-
-        #context_output = torch.relu(self.linear_re(context_output))
-        #print('output_4',context_output[0])
-        '''
-        if self.use_coreference:
-            context_output = torch.cat([context_output, self.entity_embed(pos)], dim=-1)
-
-        if self.use_entity_type:
-            context_output = torch.cat([context_output, self.ner_emb(context_ner)], dim=-1)
-        '''
         context_output = self.linear_re(context_output)
 
 
@@ -122,17 +84,11 @@ class BERT(nn.Module):
         if self.use_distance:
             s_rep = torch.cat([start_re_output, self.dis_embed(dis_h_2_t)], dim=-1)
             t_rep = torch.cat([end_re_output, self.dis_embed(dis_t_2_h)], dim=-1)
-            #rep = torch.cat([s_rep, t_rep], dim=-1)
-            #rep = s_rep - t_rep
-            #predict_re = self.linear_re(rep)
+
             predict_re = self.bili(s_rep, t_rep)
         else:
-            #rep = s_rep - t_rep
-            #rep = torch.cat([s_rep, t_rep], dim=-1)
-            #predict_re = self.linear_re(rep)
-            predict_re = self.bili(start_re_output, end_re_output)
 
-        #print(predict_re[0])
+            predict_re = self.bili(start_re_output, end_re_output)
 
         return predict_re
 
@@ -314,3 +270,54 @@ class BiAttention(nn.Module):
         output_two = torch.bmm(weight_two, input)
 
         return torch.cat([input, output_one, input*output_one, output_two*output_one], dim=-1)
+
+
+class SelfAttention(nn.Module):
+    def __init__(self, hidden_size):
+        super(SelfAttention, self).__init__()
+        self.hidden_size = hidden_size
+        self.query = nn.Linear(hidden_size, hidden_size)
+        self.key = nn.Linear(hidden_size, hidden_size)
+        self.value = nn.Linear(hidden_size, hidden_size)
+        self.softmax = nn.Softmax(dim=-1)
+
+    def forward(self, x):
+        # x shape: [batch_size, seq_length, hidden_size]
+        Q = self.query(x)
+        K = self.key(x)
+        V = self.value(x)
+
+        # 计算注意力得分
+        attention_scores = torch.matmul(Q, K.transpose(-2, -1)) / (self.hidden_size ** 0.5)
+        attention_weights = self.softmax(attention_scores)
+
+        # 应用注意力权重
+        attention_output = torch.matmul(attention_weights, V)
+        return attention_output
+    
+    
+class EnhancedBERTWithAttention(nn.Module):
+    def __init__(self, config):
+        super(EnhancedBERTWithAttention, self).__init__()
+        # BERT模型
+        self.bert = BertModel.from_pretrained('bert-base-uncased')
+        bert_hidden_size = self.bert.config.hidden_size
+        
+        # 多头注意力机制
+        self.multihead_attention = MultiHeadAttention(hidden_size=bert_hidden_size, num_heads=config.num_attention_heads)
+        
+        # 其他属性...
+        self.linear_re = nn.Linear(bert_hidden_size, config.relation_num)
+        # 初始化其他组件...
+        
+    def forward(self, *input):
+        # 从BERT获取编码
+        context_output = self.bert(*input)[0]
+        
+        # 应用多头注意力机制
+        attention_output = self.multihead_attention(context_output, context_output, context_output)
+        
+        # 应用最终的线性层
+        output = self.linear_re(attention_output)
+        
+        return output
