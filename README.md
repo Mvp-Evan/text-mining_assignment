@@ -1,3 +1,42 @@
-# Config before Training
-- [x] Copy all files from DocRED_baseline_metadata folder of Google Drive to data folder of this repository
-- [x] Run ./configs/gen_data.py before training
+# Package Requirements
+Before runing the code, you need to install the following packages:
+```terminal
+pip install -r requirements.txt
+```
+
+# Data and model preparation
+Please download the data from Google Drive and put it in the `./data` folder. The data can be downloaded from [here](https://drive.google.com/drive/folders/1)
+
+Please download the model weights from Google Drive and put it in the `./checkpoint` folder. The model weights can be downloaded from [here](https://drive.google.com/drive/folders/1)
+
+# Run the code
+This project data provide two updated methods of LSTM and BERT. You can follow the instructions below to train, test and predict via run `./main.py`.
+There are three arguments you can use for main.py:
+- `--model`: the model you want to use, you can choose from `LSTM` and `BERT`
+- `--need_generate_data`: whether you want to generate the data, you can choose from `True` and `False`
+- `--run_type`: the mode you want to use, you can choose from `train`, `test` and `predict`
+- `--device`: the device you want to use, you can choose from `cpu`, `cuda` and `mps`  
+
+Typically, the data we provided in Googl Drive has been preprocessed, so you can set `--need_generate_data` to `False` or ignore this argument.
+
+For example, if you want to train the LSTM model on GPU, you can run the following command:
+```terminal
+python main.py --model LSTM --run_type train --device cuda
+```
+
+If you want to train the BERT model on MPS and generate the data in advance, you can run the following command:
+```terminal
+python main.py --model BERT --need_generate_data True --run_type train --device mps
+```
+
+If you want to test the BERT model on CPU, you can run the following command:
+```terminal
+python main.py --model BERT --run_type test --device cpu
+```
+
+If you want to predict the LSTM model on MPS, you can run the following command:
+```terminal
+python main.py --model LSTM --run_type predict --device mps
+```
+When you run predict mode, you will be required to input the sentence you want to predict. After you input the sentence, the model will print the prediction result.
+

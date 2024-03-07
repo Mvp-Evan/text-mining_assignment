@@ -1,24 +1,137 @@
-\documentclass{article}
-\usepackage{geometry}
+% Preamble
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+% Packages
 \usepackage{cite}
-\geometry{a4paper}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\def\BibTeX{{
+        \rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX
+    }
+}
 
 \title{Text-Mining Short Paper}
-\author{Qixuan Yang, Matei-Alexandru Costin, Hong Wang, Jianxin YU}
-\date{2nd March 2024}
+\author{
+    \IEEEauthorblockN{
+        Qixuan Yang
+    }
+    \IEEEauthorblockA{
+        \textit{
+            Computer Science
+        } \\
+        \textit{
+            University of Manchester
+        }\\
+        Manchester, the United Kingdom \\
+        qixuan.yang@postgrad.manchester.ac.uk
+    }
+    \and
+    \IEEEauthorblockN{
+        Hong Wang
+    }
+    \IEEEauthorblockA{
+        \textit{
+            Computer Science
+        } \\
+        \textit{
+            University of Manchester
+        }\\
+        Manchester, the United Kingdom \\
+        hong.wang-5@student.manchester.ac.uk
+    }
+    \and
+    \IEEEauthorblockN{
+        Matei-Alexandru Costin
+    }
+    \IEEEauthorblockA{
+        \textit{
+            Computer Science
+        } \\
+        \textit{
+            University of Manchester
+        }\\
+        Manchester, the United Kingdom \\
+        matei-alexandru.costin@student.manchester.ac.uk
+    }
+    \and
+    \IEEEauthorblockN{
+        Jianxin Yu
+    }
+    \IEEEauthorblockA{
+        \textit{
+            Computer Science
+        } \\
+        \textit{
+            University of Manchester
+        }\\
+        Manchester, the United Kingdom \\
+        jianxin.yu@postgrad.manchester.ac.uk
+    }
+}
 
 %%% BEGIN DOCUMENT
 \begin{document}
-
 \maketitle
-% \tableofcontents
+
+\begin{abstract}
+This document is a model and instructions for \LaTeX.
+This and the IEEEtran.cls file define the components of your paper [title, text, heads, etc.]. *CRITICAL: Do Not Use Symbols, Special Characters, Footnotes, 
+or Math in Paper Title or Abstract.
+\end{abstract}
+
+\begin{IEEEkeywords}
+component, formatting, style, styling, insert
+\end{IEEEkeywords}
+
+% Requirements:
+% The paper content should be at most four pages long, plus any number of pages for references and any appendices.
 
 \section{Introduction}
-\cite{yao2019docred}
+% (1) provide an introduction to the RE task and describe your chosen RE dataset; 
 
-\section{Method}
+DocRed dataset\cite{yao2019docred}
+
+\section{Literature Review}
+% (2) review previously reported work that is related to your approaches; 
+
+DocRed dataset with LSTM\cite{yao2019docred}
+
+CNN\cite{yao2019docred}
+
+BiLSTM\cite{yao2019docred}
+
+SAIS-BERT\cite{xiao2021sais}
+
+GAIN-BERT\cite{zeng2020double}
+
+Two-steps BERT\cite{wang2019fine}
+
+DREEAM\cite{ma2023dreeam}
+
+SSAN-RoBERTa-large+Adaptation\cite{xu2021entity}
+
+KD-Rb-l\cite{tan2022document}
+
+\section{Approaches}
+% (3) describe the two RE approaches that you developed, justifying why they were chosen and detailing how they were implemented; 
+
+Two RE approaches: LSTM\cite{yao2019docred} updated with VAE layer and attention layer, and BERT\cite{zeng2020double} updated with ...
+
+\section{Evaluation}
+% (4) describe how you evaluated the approaches (e.g., using which metrics); 
+% here we should find out the popular evaluations in previous papers, such as precision, accuracy or F1 score. 
+Previous papers all use F1 score to evaluate the methods work on relation extraction (RE).
+
+\section{Results}
+% (5) discuss the results of your evaluation, comparing the approaches and highlighting their strengths and weaknesses.
 
 \bibliography{references}
-\bibliographystyle{plainnat}
+\bibliographystyle{unsrt}
 
 \end{document}

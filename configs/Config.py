@@ -77,6 +77,7 @@ class Config(object):
         self.h_t_limit = 1800
 
         self.test_batch_size = self.batch_size
+        self.predict_batch_size = self.batch_size
         self.test_relation_limit = 1800
         self.char_limit = 16
         self.sent_limit = 25
@@ -194,6 +195,40 @@ class Config(object):
 
         self.test_order = list(range(self.test_len))
         self.test_order.sort(key=lambda x: np.sum(self.data_test_word[x] > 0), reverse=True)
+
+    def load_predict_data(self):
+        print("Reading testing data...")
+        self.data_word_vec = np.load(os.path.join(self.data_path, 'vec.npy'))
+        self.data_char_vec = np.load(os.path.join(self.data_path, 'char_vec.npy'))
+        self.rel2id = json.load(open(os.path.join(self.data_path, 'rel2id.json')))
+        self.id2rel = {v: k for k,v in self.rel2id.items()}
+
+        prefix = self.test_prefix
+        print (prefix)
+        self.is_predict = ('dev_test_predict' == prefix)
+        self.data_predict_word = np.load(os.path.join(self.data_path, prefix+'_word.npy'))
+        self.data_predict_pos = np.load(os.path.join(self.data_path, prefix+'_pos.npy'))
+        self.data_predict_ner = np.load(os.path.join(self.data_path, prefix+'_ner.npy'))
+        self.data_predict_char = np.load(os.path.join(self.data_path, prefix+'_char.npy'))
+        self.predict_file = json.load(open(os.path.join(self.data_path, prefix+'.json')))
+
+        self.data_predict_bert_word = np.load(os.path.join(self.data_path, prefix+'_bert_word.npy'))
+        self.data_predict_bert_mask = np.load(os.path.join(self.data_path, prefix+'_bert_mask.npy'))
+        self.data_predict_bert_starts = np.load(os.path.join(self.data_path, prefix+'_bert_starts.npy'))
+
+
+        self.predict_len = self.data_predict_word.shape[0]
+        assert(self.predict_len==len(self.predict_file))
+
+
+        print("Finish reading")
+
+        self.predict_batches = self.data_predict_word.shape[0] // self.predict_batch_size
+        if self.data_predict_word.shape[0] % self.predict_batch_size != 0:
+            self.predict_batches += 1
+
+        self.predict_order = list(range(self.predict_len))
+        self.predict_order.sort(key=lambda x: np.sum(self.data_predict_word[x] > 0), reverse=True)
 
     def combine_sents(self, h_idx, t_idx, vertexSet, sents_idx):
         h_t_sent = []
@@ -393,19 +428,19 @@ class Config(object):
                    }
 
     def get_test_batch(self):
-        context_idxs = torch.LongTensor(self.test_batch_size, self.max_length).cuda()
-        context_pos = torch.LongTensor(self.test_batch_size, self.max_length).cuda()
-        h_mapping = torch.Tensor(self.test_batch_size, self.test_relation_limit, self.max_length).cuda()
-        t_mapping = torch.Tensor(self.test_batch_size, self.test_relation_limit, self.max_length).cuda()
-        context_ner = torch.LongTensor(self.test_batch_size, self.max_length).cuda()
-        context_char_idxs = torch.LongTensor(self.test_batch_size, self.max_length, self.char_limit).cuda()
-        relation_mask = torch.Tensor(self.test_batch_size, self.h_t_limit).cuda()
-        ht_pair_pos = torch.LongTensor(self.test_batch_size, self.h_t_limit).cuda()
-        sent_idxs = torch.LongTensor(self.test_batch_size, self.sent_limit, self.word_size).cuda()
-        reverse_sent_idxs = torch.LongTensor(self.test_batch_size, self.max_length).cuda()
+        context_idxs = torch.LongTensor(self.test_batch_size, self.max_length).to(self.device)
+        context_pos = torch.LongTensor(self.test_batch_size, self.max_length).to(self.device)
+        h_mapping = torch.Tensor(self.test_batch_size, self.test_relation_limit, self.max_length).to(self.device)
+        t_mapping = torch.Tensor(self.test_batch_size, self.test_relation_limit, self.max_length).to(self.device)
+        context_ner = torch.LongTensor(self.test_batch_size, self.max_length).to(self.device)
+        context_char_idxs = torch.LongTensor(self.test_batch_size, self.max_length, self.char_limit).to(self.device)
+        relation_mask = torch.Tensor(self.test_batch_size, self.h_t_limit).to(self.device)
+        ht_pair_pos = torch.LongTensor(self.test_batch_size, self.h_t_limit).to(self.device)
+        sent_idxs = torch.LongTensor(self.test_batch_size, self.sent_limit, self.word_size).to(self.device)
+        reverse_sent_idxs = torch.LongTensor(self.test_batch_size, self.max_length).to(self.device)
 
-        context_masks = torch.LongTensor(self.test_batch_size, self.max_length).cuda()
-        context_starts = torch.LongTensor(self.test_batch_size, self.max_length).cuda()
+        context_masks = torch.LongTensor(self.test_batch_size, self.max_length).to(self.device)
+        context_starts = torch.LongTensor(self.test_batch_size, self.max_length).to(self.device)
 
         for b in range(self.test_batches):
             start_id = b * self.test_batch_size
@@ -447,6 +482,137 @@ class Config(object):
 
                 idx2label = defaultdict(list)
                 ins = self.test_file[index]
+                this_sent_idxs, this_reverse_sent_idxs = self.load_sent_idx(ins)
+                sent_idxs[i].copy_(torch.from_numpy(this_sent_idxs))
+                reverse_sent_idxs[i].copy_(torch.from_numpy(this_reverse_sent_idxs))
+
+                for label in ins['labels']:
+                    idx2label[(label['h'], label['t'])].append(label['r'])
+
+
+                L = len(ins['vertexSet'])
+                titles.append(ins['title'])
+
+                j = 0
+                for h_idx in range(L):
+                    for t_idx in range(L):
+                        if h_idx != t_idx:
+                            hlist = ins['vertexSet'][h_idx]
+                            tlist = ins['vertexSet'][t_idx]
+
+
+                            for h in hlist:
+                                h_mapping[i, j, h['pos'][0]:h['pos'][1]] = 1.0 / len(hlist) / (h['pos'][1] - h['pos'][0])
+                            for t in tlist:
+                                t_mapping[i, j, t['pos'][0]:t['pos'][1]] = 1.0 / len(tlist) / (t['pos'][1] - t['pos'][0])
+
+                            relation_mask[i, j] = 1
+
+                            delta_dis = hlist[0]['pos'][0] - tlist[0]['pos'][0]
+                            if delta_dis < 0:
+                                ht_pair_pos[i, j] = -int(self.dis2idx[-delta_dis])
+                            else:
+                                ht_pair_pos[i, j] = int(self.dis2idx[delta_dis])
+                            j += 1
+
+
+                max_h_t_cnt = max(max_h_t_cnt, j)
+                label_set = {}
+                evi_num_set = {}
+                for label in ins['labels']:
+                    label_set[(label['h'], label['t'], label['r'])] = label['in'+self.train_prefix]
+                    evi_num_set[(label['h'], label['t'], label['r'])] = len(label['evidence'])
+
+                labels.append(label_set)
+                evi_nums.append(evi_num_set)
+
+
+                L_vertex.append(L)
+                indexes.append(index)
+
+
+
+            input_lengths = (context_idxs[:cur_bsz] > 0).long().sum(dim=1)
+            max_c_len = int(input_lengths.max())
+            sent_lengths = (sent_idxs[:cur_bsz] > 0).long().sum(-1)
+
+
+            yield {'context_idxs': context_idxs[:cur_bsz, :max_c_len].contiguous(),
+                   'context_pos': context_pos[:cur_bsz, :max_c_len].contiguous(),
+                   'h_mapping': h_mapping[:cur_bsz, :max_h_t_cnt, :max_c_len],
+                   't_mapping': t_mapping[:cur_bsz, :max_h_t_cnt, :max_c_len],
+                   'labels': labels,
+                   'L_vertex': L_vertex,
+                   'input_lengths': input_lengths,
+                   'context_ner': context_ner[:cur_bsz, :max_c_len].contiguous(),
+                   'context_char_idxs': context_char_idxs[:cur_bsz, :max_c_len].contiguous(),
+                   'relation_mask': relation_mask[:cur_bsz, :max_h_t_cnt],
+                   'titles': titles,
+                   'ht_pair_pos': ht_pair_pos[:cur_bsz, :max_h_t_cnt],
+                   'indexes': indexes,
+                   'sent_idxs': sent_idxs[:cur_bsz],
+                   'sent_lengths': sent_lengths[:cur_bsz],
+                   'reverse_sent_idxs': reverse_sent_idxs[:cur_bsz, :max_c_len],
+                   'context_masks': context_masks[:cur_bsz, :max_c_len].contiguous(),
+                   'context_starts': context_starts[:cur_bsz, :max_c_len].contiguous(),
+                   'evi_num_set': evi_nums,
+                   }
+
+    def get_predict_batch(self):
+        context_idxs = torch.LongTensor(self.predict_batch_size, self.max_length).to(self.device)
+        context_pos = torch.LongTensor(self.predict_batch_size, self.max_length).to(self.device)
+        h_mapping = torch.Tensor(self.predict_batch_size, self.predict_relation_limit, self.max_length).to(self.device)
+        t_mapping = torch.Tensor(self.predict_batch_size, self.predict_relation_limit, self.max_length).to(self.device)
+        context_ner = torch.LongTensor(self.predict_batch_size, self.max_length).to(self.device)
+        context_char_idxs = torch.LongTensor(self.predict_batch_size, self.max_length, self.char_limit).to(self.device)
+        relation_mask = torch.Tensor(self.predict_batch_size, self.h_t_limit).to(self.device)
+        ht_pair_pos = torch.LongTensor(self.predict_batch_size, self.h_t_limit).to(self.device)
+        sent_idxs = torch.LongTensor(self.predict_batch_size, self.sent_limit, self.word_size).to(self.device)
+        reverse_sent_idxs = torch.LongTensor(self.predict_batch_size, self.max_length).to(self.device)
+
+        context_masks = torch.LongTensor(self.predict_batch_size, self.max_length).to(self.device)
+        context_starts = torch.LongTensor(self.predict_batch_size, self.max_length).to(self.device)
+
+        for b in range(self.predict_batches):
+            start_id = b * self.predict_batch_size
+            cur_bsz = min(self.predict_batch_size, self.predict_len - start_id)
+            cur_batch = list(self.predict_order[start_id : start_id + cur_bsz])
+
+            for mapping in [h_mapping, t_mapping, relation_mask]:
+                mapping.zero_()
+
+
+            ht_pair_pos.zero_()
+
+            sent_idxs.zero_()
+            sent_idxs -= 1
+            reverse_sent_idxs.zero_()
+            reverse_sent_idxs -= 1
+
+            max_h_t_cnt = 1
+
+            cur_batch.sort(key=lambda x: np.sum(self.data_predict_word[x]>0) , reverse = True)
+
+            labels = []
+
+            L_vertex = []
+            titles = []
+            indexes = []
+
+            evi_nums = []
+
+            for i, index in enumerate(cur_batch):
+                #context_idxs[i].copy_(torch.from_numpy(self.data_test_word[index, :]))
+                context_idxs[i].copy_(torch.from_numpy(self.data_predict_bert_word[index, :]))
+                context_pos[i].copy_(torch.from_numpy(self.data_predict_pos[index, :]))
+                context_char_idxs[i].copy_(torch.from_numpy(self.data_predict_char[index, :]))
+                context_ner[i].copy_(torch.from_numpy(self.data_predict_ner[index, :]))
+
+                context_masks[i].copy_(torch.from_numpy(self.data_predict_bert_mask[index, :]))
+                context_starts[i].copy_(torch.from_numpy(self.data_predict_bert_starts[index, :]))
+
+                idx2label = defaultdict(list)
+                ins = self.predict_file[index]
                 this_sent_idxs, this_reverse_sent_idxs = self.load_sent_idx(ins)
                 sent_idxs[i].copy_(torch.from_numpy(this_sent_idxs))
                 reverse_sent_idxs[i].copy_(torch.from_numpy(this_reverse_sent_idxs))
@@ -880,6 +1046,81 @@ class Config(object):
         model.eval()
         #self.test_anylyse(model, model_name, True, input_theta)
         f1, auc, pr_x, pr_y = self.test(model, model_name, True, input_theta, two_phase, pretrain_model)
+
+
+    def test_predect(self, model_pattern, model_name, input_theta, two_phase=False, pretrain_model_name=None):
+        pretrain_model = None
+        if two_phase:
+            pretrain_model = model_pattern(config=self)
+            pretrain_model.load_state_dict(torch.load(os.path.join(self.checkpoint_dir, pretrain_model_name)))
+            pretrain_model.to(self.device)
+            pretrain_model.eval()
+
+        model = model_pattern(config=self)
+
+        model.load_state_dict(torch.load(os.path.join(self.checkpoint_dir, model_name)))
+        model.to(self.device)
+        model.eval()
+
+        data_idx = 0
+        eval_start_time = time.time()
+        # test_result_ignore = []
+        total_recall_ignore = 0
+
+        test_result = []
+        total_recall = 0
+        top1_acc = have_label = 0
+
+        predicted_as_zero = 0
+        total_ins_num = 0
+
+        def logging(s, print_=True, log_=True):
+            if print_:
+                print(s)
+            if log_:
+                with open(os.path.join(os.path.join("log", model_name)), 'a+') as f_log:
+                    f_log.write(s + '\n')
+
+        for data in self.get_predict_batch():
+            with torch.no_grad():
+                context_idxs = data['context_idxs']
+                context_pos = data['context_pos']
+                h_mapping = data['h_mapping']
+                t_mapping = data['t_mapping']
+                labels = data['labels']
+                L_vertex = data['L_vertex']
+                input_lengths = data['input_lengths']
+                context_ner = data['context_ner']
+                context_char_idxs = data['context_char_idxs']
+                relation_mask = data['relation_mask']
+                ht_pair_pos = data['ht_pair_pos']
+                sent_idxs = data['sent_idxs']
+                sent_lengths = data['sent_lengths']
+                reverse_sent_idxs = data['reverse_sent_idxs']
+                context_masks = data['context_masks']
+                context_starts = data['context_starts']
+
+                titles = data['titles']
+                indexes = data['indexes']
+
+                dis_h_2_t = ht_pair_pos + 10
+                dis_t_2_h = -ht_pair_pos + 10
+
+                if two_phase:
+                    is_rel_exist = pretrain_model(context_idxs, context_pos, context_ner, context_char_idxs,
+                                                  input_lengths,
+                                                  h_mapping, t_mapping, relation_mask, dis_h_2_t, dis_t_2_h, sent_idxs,
+                                                  sent_lengths, reverse_sent_idxs, context_masks, context_starts)
+
+                predict_re = model(context_idxs, context_pos, context_ner, context_char_idxs, input_lengths,
+                                   h_mapping, t_mapping, relation_mask, dis_h_2_t, dis_t_2_h, sent_idxs, sent_lengths,
+                                   reverse_sent_idxs, context_masks, context_starts)
+
+                predict_re = torch.sigmoid(predict_re)
+
+            predict_re = predict_re.data.cpu().numpy()
+
+            print(predict_re)
 
     def add_attr(self, attr_list, key, values):
         for i, v in enumerate(values):

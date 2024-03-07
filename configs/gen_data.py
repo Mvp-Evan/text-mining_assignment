@@ -24,6 +24,7 @@ train_distant_file_name = os.path.join(in_path, 'train_distant.json')
 train_annotated_file_name = os.path.join(in_path, 'train_annotated.json')
 dev_file_name = os.path.join(in_path, 'dev.json')
 test_file_name = os.path.join(in_path, 'test.json')
+test_predict_file_name = os.path.join(in_path, 'test_predict.json')
 
 rel2id = json.load(open(os.path.join(out_path, 'rel2id.json'), "r"))
 id2rel = {v:u for u,v in rel2id.items()}
@@ -219,4 +220,7 @@ def generate_data(device='mps'):
     init(dev_file_name, rel2id, max_length = 512, is_training = False, suffix='_dev', device=device)
     init(test_file_name, rel2id, max_length = 512, is_training = False, suffix='_test', device=device)
 
+
+def generate_test_predict(device='mps'):
+    init(test_predict_file_name, rel2id, max_length = 512, is_training = False, suffix='_test_predict', device=device)
 
