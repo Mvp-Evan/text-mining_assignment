@@ -1,5 +1,4 @@
 /data/
-/.idea/
-/.out/
-/.log/
-/.out/
+/idea/
+/out/
+/log/
