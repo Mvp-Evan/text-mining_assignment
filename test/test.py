@@ -29,7 +29,8 @@ def test(model_name='BERT', device='mps'):
 
     args = parser.parse_args()
     model = {
-        'LSTM': models.LSTM,
+        'LSTM_UP': models.LSTM_UP,
+		'LSTM': models.LSTM,
         'BERT': models.BERT,
         'ContextAware': models.ContextAware,
     }

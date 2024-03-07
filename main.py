@@ -83,7 +83,7 @@ def data_preprocess(text, title, output_file='./data/test_predict.json', device=
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--run_type', type=str, default='predict')
+    parser.add_argument('--run_type', type=str, default='test')
     parser.add_argument('--model_name', type=str, default='LSTM')
     parser.add_argument('--need_generate_data', type=bool, default=False)
     parser.add_argument('--device', type=str, default='mps')
