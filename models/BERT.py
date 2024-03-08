@@ -8,6 +8,8 @@ from torch import nn
 import numpy as np
 import math
 from torch.nn import init
+from transformers.models.ctrl.modeling_ctrl import MultiHeadAttention
+
 from models.attention import SimpleEncoder
 from torch.nn.utils import rnn
 from transformers import *
