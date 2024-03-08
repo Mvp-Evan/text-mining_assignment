@@ -49,3 +49,8 @@ When you run predict mode, you will be required to input the sentence you want t
 
 # Short Paper
 Short paper of this project can be found in `./paper` folder as late format. And the PDF format of paper can be found in `./out` folder.
+
+# Acknowledgement
+These code are based on the following repositories:
+- [BERT](https://github.com/hongwang600/DocRed)
+- [LSTM](https://github.com/thunlp/DocRED)
