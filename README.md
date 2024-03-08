@@ -41,7 +41,7 @@ If you want to predict the LSTM model on MPS, you can run the following command:
 ```terminal
 python main.py --model LSTM --run_type predict --device mps
 ```
-When you run predict mode, you will be required to input the sentence you want to predict. After you input the sentence, the model will print the prediction result.
+When you run predict mode, you will be required to input the sentence you want to predict. After you input the sentence, the model will print the prediction result. In prediction result, `r` is the Relation Extraction result.
 
 # Possible issues
 - If you meet issues with `***.npy file not found` or `***.json file not found`, please run `main.py` with parameter `--need_generate_data True` to generate the data in advance.

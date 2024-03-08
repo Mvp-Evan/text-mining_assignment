@@ -1,7 +1,6 @@
 import argparse
 import json
 import random
-import spacy
 import sys
 
 from nltk import word_tokenize, PorterStemmer, download, pos_tag
@@ -12,34 +11,14 @@ from configs import generate_test_predict
 from test import test, predict
 from train import train
 
-nlp = spacy.load("en_core_web_sm")
 
-# # def tag_to_type(word, sentences):
-#     word_types = ["ORG", "LOC", "TIME", "PER", "MISC", "NUM"]
-#     if tag in ['NN', 'NNS', 'NNP', 'NNPS']:
-#         return random.choice(word_types)
+def tag_to_type(tag):
+    word_types = ["ORG", "LOC", "TIME", "PER", "MISC", "NUM"]
+    if tag in ['NN', 'NNS', 'NNP', 'NNPS']:
+        return random.choice(word_types)
 
-#     else:
-#         return 'BLANK'
-def tag_to_type(word,sentences,tag):
-    # Process sentences with spaCy to identify entities
-    checked = False
-    docs = nlp(sentences)
-
-    for sent_id, sent in enumerate(docs.sents):
-        for ent in sent.ents:
-            if word == ent and ent.label_ in ["ORG", "LOC", "TIME", "PER", "MISC", "NUM"]:
-                checked = True
-                return ent.label_
-            
-    if checked == False:
-        # Define a simplistic and hypothetical mapping from POS tag to a NER type
-        word_types = ["ORG", "LOC", "TIME", "PER", "MISC", "NUM"]
-        if tag in ['NN', 'NNS', 'NNP', 'NNPS']:
-            return random.choice(word_types)
-
-        else:
-            return 'BLANK'
+    else:
+        return 'BLANK'
             
 
 def tokenize_data(text, title, output_file):
@@ -85,7 +64,7 @@ def tokenize_data(text, title, output_file):
             else:
                 pos = [vertexs[-1]['pos'][1], vertexs[-1]['pos'][1] + len(word)]
 
-            type_ = tag_to_type(word,text,tag)
+            type_ = tag_to_type(tag)
             vertex = {
                 'name': word,
                 'pos': pos,
@@ -116,9 +95,9 @@ def data_preprocess(text, title, output_file='./data/test_predict.json', device=
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--run_type', type=str, default='predict')
-    parser.add_argument('--model_name', type=str, default='LSTM')
+    parser.add_argument('--model_name', type=str, default='BERT')
     parser.add_argument('--need_generate_data', type=bool, default=False)
-    parser.add_argument('--device', type=str, default='cuda:0')
+    parser.add_argument('--device', type=str, default='mps')
 
     args = parser.parse_args()
     # if you want to generate data, run this line
@@ -136,8 +115,6 @@ def main():
         output_file = './data/test_predict.json'
         title = input('Please input the title of the text you want to predict: ')
         text = input('Please input the text you want to predict: ')
-        # title = "sample title"
-        # text = "odel Performance. Table 4 shows the experimental results under the supervised and weakly supervised settings, from which we have the following observations: (1) Models trained with human annotated data generally outperform their counter parts trained on distantly supervised data."
         data_preprocess(text, title, output_file, args.device)
         predict(args.model_name, args.device)
 
