@@ -46,3 +46,6 @@ When you run predict mode, you will be required to input the sentence you want t
 # Possible issues
 - If you meet issues with `***.npy file not found` or `***.json file not found`, please run `main.py` with parameter `--need_generate_data True` to generate the data in advance.
 - Because of test set is big, it may take a long time and more memory to test the model.
+
+# Short Paper
+Short paper of this project can be found in `./paper` folder as late format. And the PDF format of paper can be found in `./out` folder.
