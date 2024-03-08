@@ -2,6 +2,7 @@ import argparse
 import json
 import random
 import spacy
+import sys
 
 from nltk import word_tokenize, PorterStemmer, download, pos_tag
 from nltk.corpus import stopwords
@@ -13,7 +14,7 @@ from train import train
 
 nlp = spacy.load("en_core_web_sm")
 
-# def tag_to_type(word, sentences):
+# # def tag_to_type(word, sentences):
 #     word_types = ["ORG", "LOC", "TIME", "PER", "MISC", "NUM"]
 #     if tag in ['NN', 'NNS', 'NNP', 'NNPS']:
 #         return random.choice(word_types)
@@ -27,22 +28,18 @@ def tag_to_type(word,sentences,tag):
 
     for sent_id, sent in enumerate(docs.sents):
         for ent in sent.ents:
-            if word == ent:
+            if word == ent and ent.label_ in ["ORG", "LOC", "TIME", "PER", "MISC", "NUM"]:
                 checked = True
                 return ent.label_
             
     if checked == False:
         # Define a simplistic and hypothetical mapping from POS tag to a NER type
-        tag_to_entity_type = {
-            'NNP': 'PER',  # Assuming proper nouns as person names, which is a simplification
-            'NNPS': 'PER',  # Same assumption for plural proper nouns
-            'NN': 'MISC',  # Common nouns as miscellaneous
-            'NNS': 'MISC',  # Plural nouns also as miscellaneous
-            'CD': 'NUM',  # Cardinal numbers
-            # Add more mappings as needed, understanding the limitations of this approach
-        }
-        # Return the entity type if available, else return 'UNKNOWN'
-        return tag_to_entity_type.get(tag, 'BLANK')
+        word_types = ["ORG", "LOC", "TIME", "PER", "MISC", "NUM"]
+        if tag in ['NN', 'NNS', 'NNP', 'NNPS']:
+            return random.choice(word_types)
+
+        else:
+            return 'BLANK'
             
 
 def tokenize_data(text, title, output_file):
@@ -66,12 +63,15 @@ def tokenize_data(text, title, output_file):
     sentences = []
     sentence = []
     for word in words:
-        if word == '.':
+        if word == '.'or word =='?'or word =='!':
             sentences.append(sentence)
             sentence = []
         else:
             sentence.append(word)
-
+    # new added 
+    if len(sentences)==0:
+        print("it is not a proper sentence!!!")
+        sys.exit(-1)
     # separate vertexSet, and add pos[start, end], sent_id, type to each vertex
     vertexSet = []
     for i, sentence in enumerate(sentences):
@@ -134,10 +134,10 @@ def main():
         test(args.model_name, args.device)
     elif args.run_type == 'predict':
         output_file = './data/test_predict.json'
-        # title = input('Please input the title of the text you want to predict: ')
-        # text = input('Please input the text you want to predict: ')
-        title = "sample title"
-        text = "odel Performance. Table 4 shows the experimental results under the supervised and weakly supervised settings, from which we have the following observations: (1) Models trained with human annotated data generally outperform their counter parts trained on distantly supervised data."
+        title = input('Please input the title of the text you want to predict: ')
+        text = input('Please input the text you want to predict: ')
+        # title = "sample title"
+        # text = "odel Performance. Table 4 shows the experimental results under the supervised and weakly supervised settings, from which we have the following observations: (1) Models trained with human annotated data generally outperform their counter parts trained on distantly supervised data."
         data_preprocess(text, title, output_file, args.device)
         predict(args.model_name, args.device)
 
