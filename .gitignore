@@ -1,6 +1,7 @@
 /data/
-/idea/
+/.idea/
 /out/
 /log/
 /checkpoint/
 /*/__pycache__/
+/__pycache__/
